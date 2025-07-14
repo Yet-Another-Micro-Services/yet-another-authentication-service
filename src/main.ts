@@ -9,6 +9,8 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
+    const { ThrottlerGuard } = await import('@nestjs/throttler');
+    app.useGlobalGuards(app.get(ThrottlerGuard));
 
     // Global request logger middleware
     app.use((req, res, next) => {

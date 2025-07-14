@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -26,10 +28,21 @@ import { AuthModule } from './modules/auth.module';
       inject: [ConfigService],
     }),
     
+    // Global rate limiting: 100 requests per 15 minutes per IP
+    ThrottlerModule.forRoot([{
+      ttl: 900, // 15 minutes
+      limit: 100,
+    }]),
     // Auth module
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

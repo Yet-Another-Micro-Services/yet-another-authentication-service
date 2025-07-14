@@ -53,7 +53,7 @@ async function bootstrapDev() {
     await app.listen(port);
     
     logger.log(`🚀 Auth Service (Dev Mode) is running on: http://localhost:${port}`);
-    logger.log(`📚 API Documentation: http://localhost:${port}/api`);
+    logger.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
     logger.log(`🔍 Health Check: http://localhost:${port}/api/auth/health`);
     logger.log(`💾 Using In-Memory MongoDB: ${mongoUri}`);
     

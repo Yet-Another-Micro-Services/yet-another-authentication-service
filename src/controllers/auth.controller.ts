@@ -16,7 +16,8 @@ import { UserService } from '../services/user.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { OAuthAccountDto, SignUpDto, SignInDto, SetPasswordDto, ChangePasswordDto } from '../dto/auth.dto';
 import { OAuthProvider } from '../schemas/user.schema';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { AuthResponseDto } from '../dto/auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -51,7 +52,8 @@ export class AuthController {
    */
   @Post('signup')
   @ApiOperation({ summary: 'User registration with email and password' })
-  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  @ApiBody({ type: SignUpDto })
+  @ApiResponse({ status: 201, description: 'User registered successfully', type: AuthResponseDto })
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() signUpData: SignUpDto) {
     try {
@@ -71,7 +73,8 @@ export class AuthController {
    */
   @Post('signin')
   @ApiOperation({ summary: 'User login with email/username and password' })
-  @ApiResponse({ status: 200, description: 'User signed in successfully' })
+  @ApiBody({ type: SignInDto })
+  @ApiResponse({ status: 200, description: 'User signed in successfully', type: AuthResponseDto })
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() signInData: SignInDto) {
     try {
@@ -171,6 +174,7 @@ export class AuthController {
   @Post('set-password')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Set password for OAuth users' })
+  @ApiBody({ type: SetPasswordDto })
   @ApiResponse({ status: 200, description: 'Password set successfully' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -199,6 +203,7 @@ export class AuthController {
   @Post('change-password')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change existing password' })
+  @ApiBody({ type: ChangePasswordDto })
   @ApiResponse({ status: 200, description: 'Password changed successfully' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
