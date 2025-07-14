@@ -38,6 +38,17 @@ async function bootstrapDev() {
     // Global prefix for API routes
     app.setGlobalPrefix('api');
 
+    // Swagger setup
+    const { SwaggerModule, DocumentBuilder } = await import('@nestjs/swagger');
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Authentication Service API')
+      .setDescription('API documentation for the authentication service')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+
     const port = configService.get('AUTH_SERVICE_PORT') || 3001;
     await app.listen(port);
     

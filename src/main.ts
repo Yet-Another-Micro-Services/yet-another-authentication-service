@@ -9,6 +9,24 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
+
+    // Global request logger middleware
+    app.use((req, res, next) => {
+      const logger = new Logger('Request');
+      logger.log(`${req.method} ${req.originalUrl}`);
+      next();
+    });
+
+    // Swagger setup
+    const { SwaggerModule, DocumentBuilder } = await import('@nestjs/swagger');
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Authentication Service API')
+      .setDescription('API documentation for the authentication service')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
     
     // Global validation pipe
     app.useGlobalPipes(new ValidationPipe({

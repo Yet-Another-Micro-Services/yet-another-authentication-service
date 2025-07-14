@@ -16,7 +16,9 @@ import { UserService } from '../services/user.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { OAuthAccountDto, SignUpDto, SignInDto, SetPasswordDto, ChangePasswordDto } from '../dto/auth.dto';
 import { OAuthProvider } from '../schemas/user.schema';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
@@ -33,6 +35,8 @@ export class AuthController {
    * GET /auth/health
    */
   @Get('health')
+  @ApiOperation({ summary: 'Health check endpoint' })
+  @ApiResponse({ status: 200, description: 'Service is healthy' })
   getHealth() {
     return {
       status: 'healthy',
@@ -46,6 +50,8 @@ export class AuthController {
    * POST /auth/signup
    */
   @Post('signup')
+  @ApiOperation({ summary: 'User registration with email and password' })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() signUpData: SignUpDto) {
     try {
@@ -64,6 +70,8 @@ export class AuthController {
    * POST /auth/signin
    */
   @Post('signin')
+  @ApiOperation({ summary: 'User login with email/username and password' })
+  @ApiResponse({ status: 200, description: 'User signed in successfully' })
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() signInData: SignInDto) {
     try {
@@ -84,6 +92,8 @@ export class AuthController {
    * POST /auth/sync
    */
   @Post('sync')
+  @ApiOperation({ summary: 'Sync NextAuth.js session with backend auth service' })
+  @ApiResponse({ status: 200, description: 'Session synced successfully' })
   @HttpCode(HttpStatus.OK)
   async syncSession(@Body() sessionData: {
     providerId: string;
@@ -159,6 +169,9 @@ export class AuthController {
    * POST /auth/set-password
    */
   @Post('set-password')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Set password for OAuth users' })
+  @ApiResponse({ status: 200, description: 'Password set successfully' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async setPassword(@Req() req: Request, @Body() setPasswordData: SetPasswordDto) {
@@ -184,6 +197,9 @@ export class AuthController {
    * POST /auth/change-password
    */
   @Post('change-password')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change existing password' })
+  @ApiResponse({ status: 200, description: 'Password changed successfully' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async changePassword(@Req() req: Request, @Body() changePasswordData: ChangePasswordDto) {
@@ -213,6 +229,9 @@ export class AuthController {
    * GET /auth/has-password
    */
   @Get('has-password')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Check if user has a password set' })
+  @ApiResponse({ status: 200, description: 'Password status returned' })
   @UseGuards(JwtAuthGuard)
   async hasPassword(@Req() req: Request) {
     try {
