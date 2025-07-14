@@ -7,7 +7,6 @@ import { User, UserSchema } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { AuthController } from '../controllers/auth.controller';
-import { GoogleStrategy } from '../strategies/google.strategy';
 import { JwtStrategy } from '../strategies/jwt.strategy';
 
 @Module({
@@ -29,7 +28,6 @@ import { JwtStrategy } from '../strategies/jwt.strategy';
   providers: [
     AuthService,
     UserService,
-    GoogleStrategy,
     JwtStrategy,
   ],
   exports: [AuthService, UserService],

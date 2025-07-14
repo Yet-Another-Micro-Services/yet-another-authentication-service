@@ -33,38 +33,6 @@ export class SignInDto {
   password: string;
 }
 
-export class GoogleAuthDto {
-  @IsString()
-  accessToken: string;
-
-  @IsString()
-  @IsOptional()
-  refreshToken?: string;
-}
-
-export class OAuthCallbackDto {
-  @IsString()
-  code: string;
-
-  @IsString()
-  @IsOptional()
-  state?: string;
-}
-
-export class UpdateProfileDto {
-  @IsString()
-  @IsOptional()
-  name?: string;
-
-  @IsEmail()
-  @IsOptional()
-  email?: string;
-
-  @IsUrl()
-  @IsOptional()
-  profilePicture?: string;
-}
-
 export class AuthResponseDto {
   @IsString()
   accessToken: string;
@@ -98,33 +66,6 @@ export class OAuthAccountDto {
   @IsString()
   @IsOptional()
   refreshToken?: string;
-}
-
-export class NextAuthSyncDto {
-  @IsString()
-  provider: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  name: string;
-
-  @IsString()
-  @IsOptional()
-  image?: string;
-
-  @IsString()
-  @IsOptional()
-  accessToken?: string;
-
-  @IsString()
-  @IsOptional()
-  refreshToken?: string;
-
-  @IsString()
-  @IsOptional()
-  providerId?: string;
 }
 
 export class SetPasswordDto {

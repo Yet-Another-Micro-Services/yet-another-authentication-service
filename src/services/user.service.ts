@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { User, UserDocument, OAuthProvider, OAuthAccount } from '../schemas/user.schema';
-import { UpdateProfileDto, OAuthAccountDto, SignUpDto } from '../dto/auth.dto';
+import { OAuthAccountDto, SignUpDto } from '../dto/auth.dto';
 
 @Injectable()
 export class UserService {
@@ -289,53 +289,6 @@ export class UserService {
         throw error;
       }
       throw new Error(`Error merging users: ${error.message}`);
-    }
-  }
-
-  /**
-   * Update user profile
-   * @param userId - User ID
-   * @param updateData - Profile update data
-   * @returns Updated user document
-   */
-  async updateProfile(userId: string, updateData: UpdateProfileDto): Promise<UserDocument> {
-    try {
-      const user = await this.userModel.findById(userId);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
-      // If email is being updated, check if it conflicts with OAuth accounts
-      if (updateData.email && updateData.email !== user.email) {
-        const emailMatches = user.oauthAccounts.some(
-          account => account.email.toLowerCase() === updateData.email!.toLowerCase()
-        );
-        
-        if (!emailMatches) {
-          throw new BadRequestException(
-            'Email update failed: New email must match at least one OAuth account email'
-          );
-        }
-
-        // Check if another user already has this email
-        const existingUser = await this.findByEmail(updateData.email);
-        if (existingUser && existingUser._id.toString() !== userId) {
-          throw new ConflictException('Another user already has this email');
-        }
-      }
-
-      // Update user fields
-      Object.assign(user, updateData);
-      if (updateData.email) {
-        user.email = updateData.email.toLowerCase();
-      }
-
-      return await user.save();
-    } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ConflictException) {
-        throw error;
-      }
-      throw new Error(`Error updating profile: ${error.message}`);
     }
   }
 
