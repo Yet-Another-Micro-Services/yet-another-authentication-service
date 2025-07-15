@@ -20,8 +20,6 @@ import { AuthModule } from './modules/auth.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get('MONGODB_URI'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         retryAttempts: 5,
         retryDelay: 1000,
       }),

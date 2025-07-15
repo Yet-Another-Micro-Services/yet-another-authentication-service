@@ -23,8 +23,6 @@ export class TestDatabase {
     return MongooseModule.forRootAsync({
       useFactory: async () => ({
         uri: await this.setupTestDB(),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
       }),
     });
   }
